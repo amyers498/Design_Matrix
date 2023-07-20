@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matrices",
+  "info": {
+    "singularName": "matrix",
+    "pluralName": "matrices",
+    "displayName": "Matrix"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Price_1_1": {
+      "type": "integer"
+    },
+    "Column": {
+      "type": "string"
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Row_Name_1": {
+      "type": "string"
+    },
+    "Text_1_1": {
+      "type": "richtext"
+    },
+    "Photo_1_1": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}
