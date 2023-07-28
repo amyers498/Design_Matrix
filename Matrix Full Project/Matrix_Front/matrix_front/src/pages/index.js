@@ -79,24 +79,21 @@ const IndexPage = () => {
   };
 
   const handleCellClick = (colIndex, rowIndex) => {
-    // Only allow clicking cells in non-row name columns
-    if (colIndex !== 0) {
-      setClickedCells((prevClickedCells) => {
-        const updatedClickedCells = { ...prevClickedCells };
-
-        // Check if any other cell was clicked in the same column, and reset it
-        const clickedRowIndex = updatedClickedCells[colIndex];
-        if (typeof clickedRowIndex !== 'undefined') {
-          updatedClickedCells[colIndex] = undefined;
-        } else {
-          updatedClickedCells[colIndex] = rowIndex;
-        }
-
-        return updatedClickedCells;
-      });
-    }
+    setClickedCells((prevClickedCells) => {
+      const updatedClickedCells = { ...prevClickedCells };
+  
+      // Check if any other cell was clicked in the same column, and reset it
+      const clickedRowIndex = updatedClickedCells[colIndex];
+      if (typeof clickedRowIndex !== 'undefined') {
+        updatedClickedCells[colIndex] = undefined;
+      } else {
+        updatedClickedCells[colIndex] = rowIndex;
+      }
+  
+      return updatedClickedCells;
+    });
   };
-
+  
   const calculateTotalPrice = () => {
     let total = 0;
     Object.entries(clickedCells).forEach(([colIndex, rowIndex]) => {
@@ -117,6 +114,45 @@ const IndexPage = () => {
 
   const percentage = (calculateTotalPrice() / totalPriceFromAPI) * 100;
 
+  const getNumberOfColumns = () => {
+    if (matrixData.length === 0) return 0;
+
+    let maxColIndex = 0;
+    const attributeKeys = Object.keys(matrixData[0].attributes);
+
+    for (const key of attributeKeys) {
+      if (key.startsWith('Text_')) {
+        const [colIndex] = key.split('_').slice(1).map((index) => parseInt(index, 10));
+        if (!isNaN(colIndex) && colIndex > maxColIndex) {
+          maxColIndex = colIndex;
+        }
+      }
+    }
+
+    return maxColIndex;
+  };
+
+  const getNumberOfRows = () => {
+    if (matrixData.length === 0) return 0;
+
+    let maxRowIndex = 0;
+    const attributeKeys = Object.keys(matrixData[0].attributes);
+
+    for (const key of attributeKeys) {
+      if (key.startsWith('Text_')) {
+        const [, rowIndex] = key.split('_').slice(1).map((index) => parseInt(index, 10));
+        if (!isNaN(rowIndex) && rowIndex > maxRowIndex) {
+          maxRowIndex = rowIndex;
+        }
+      }
+    }
+
+    return maxRowIndex;
+  };
+
+  const numberOfColumns = getNumberOfColumns();
+  const numberOfRows = getNumberOfRows();
+
   return (
     <div className="container">
       {matrixTitle && <h1 className="matrix-title">{matrixTitle}</h1>}
@@ -124,9 +160,9 @@ const IndexPage = () => {
         <table>
           <thead>
             <tr>
-              <th>Row Name</th>
-              {extractColumnNames().map((columnName, index) => (
-                <th key={index}>{columnName}</th>
+              <th style={{ backgroundColor: '#245a99' }}>Row Name</th>
+              {extractColumnNames().map((columnName, colIndex) => (
+                <th key={colIndex}>{columnName}</th>
               ))}
             </tr>
           </thead>
@@ -136,10 +172,10 @@ const IndexPage = () => {
                 <td className="rotate">
                   <div className="row-name">{rowName}</div>
                 </td>
-                {extractColumnNames().map((columnName, colIndex) => (
+                {[...Array(numberOfColumns)].map((_, colIndex) => (
                   <td
                     key={colIndex}
-                    className={colIndex === 0 ? '' : clickedCells[colIndex] === rowIndex ? 'clicked' : ''}
+                    className={clickedCells[colIndex] === rowIndex ? 'clicked' : ''}
                     onClick={() => handleCellClick(colIndex, rowIndex)}
                   >
                     <div className="image-container">
@@ -157,8 +193,8 @@ const IndexPage = () => {
         </table>
       </div>
       <div className="total-price">
-        <p>Total Price from API: ${totalPriceFromAPI}</p>
-        <p>Total Calculated Price: ${calculateTotalPrice()}</p>
+        <p>Total Budget: ${totalPriceFromAPI}</p>
+        <p>Total Estimated Price: ${calculateTotalPrice()}</p>
       </div>
       <div className="temperature-bar">
         <div
@@ -168,103 +204,111 @@ const IndexPage = () => {
             height: '100%',
             borderRadius: '4px',
           }}
-        />
+          />
+        </div>
+  
+        <style jsx>{`
+          /* Styles that were not modified */
+          .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f7f0;
+          }
+          .matrix-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: black;
+          }
+          .table-container {
+            display: block;
+            max-width: 100%; /* Changed to 100% */
+            overflow-x: auto;
+          }
+          table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px; /* Adjusted font size */
+            table-layout: auto; /* Changed to auto */
+            width: 100%; /* Added to set the table width to 100% */
+          }
+          th,
+          td {
+            border: 1px solid #ddd;
+            padding: 5px; /* Adjusted padding */
+            text-align: left;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-family: "Arial Narrow", sans-serif;
+            font-weight: bold;
+            font-style: italic;
+            color: black;
+          }
+          th {
+            background-color: #245a99;
+            color: white;
+          }
+          img {
+            max-width: 60px; /* Adjusted max-width */
+            max-height: 60px; /* Adjusted max-height */
+          }
+          .rotate {
+            white-space: nowrap;
+          }
+          .rotate div {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 80px; /* Adjusted width */
+            font-size: 14px; /* Adjusted font size */
+          }
+          .image-container {
+            display: flex;
+            justify-content: center;
+          }
+  
+          /* Modified style for the clicked cells */
+          td.clicked {
+            background-color: #8ab7e8;
+          }
+  
+          /* Style for the total price */
+          .total-price {
+            margin-top: 20px;
+            font-weight: bold;
+            color: black;
+          }
+  
+          /* Style for the temperature bar */
+          .temperature-bar {
+            margin-top: 20px;
+            height: 20px;
+            background-color: #f2f2f2;
+            border-radius: 4px;
+            overflow: hidden;
+          }
+  
+          .temperature-bar div {
+            height: 100%;
+            transition: width 0.3s;
+          }
+  
+          .temperature-bar div.green {
+            background-color: green;
+          }
+  
+          .temperature-bar div.yellow {
+            background-color: yellow;
+          }
+  
+          .temperature-bar div.red {
+            background-color: red;
+          }
+        `}</style>
       </div>
-
-      <style jsx>{`
-        /* Styles that were not modified */
-        .container {
-          max-width: 100%;
-          margin: 0 auto;
-          padding: 20px;
-          text-align: center;
-        }
-        .matrix-title {
-          font-size: 24px;
-          margin-bottom: 20px;
-        }
-        .table-container {
-          display: block;
-          max-width: 90%;
-          margin: 0 auto;
-          overflow-x: auto;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-          font-size: 16px;
-          table-layout: fixed;
-        }
-        th,
-        td {
-          border: 1px solid #ddd;
-          padding: 10px;
-          text-align: left;
-          white-space: normal;
-          word-break: break-word;
-          overflow-wrap: break-word;
-        }
-        th {
-          background-color: #f2f2f2;
-        }
-        img {
-          max-width: 80px;
-          max-height: 80px;
-        }
-        .rotate {
-          white-space: nowrap;
-        }
-        .rotate div {
-          transform: rotate(-90deg);
-          transform-origin: left top;
-          width: 100px;
-          font-size: 18px;
-        }
-        .image-container {
-          display: flex;
-          justify-content: center;
-        }
-
-        /* Modified style for the clicked cells */
-        td.clicked {
-          background-color: #f2f2f2;
-        }
-
-        /* Style for the total price */
-        .total-price {
-          margin-top: 20px;
-          font-weight: bold;
-        }
-
-        /* Style for the temperature bar */
-        .temperature-bar {
-          margin-top: 20px;
-          height: 20px;
-          background-color: #f2f2f2;
-          border-radius: 4px;
-          overflow: hidden;
-        }
-
-        .temperature-bar div {
-          height: 100%;
-          transition: width 0.3s;
-        }
-
-        .temperature-bar div.green {
-          background-color: green;
-        }
-
-        .temperature-bar div.yellow {
-          background-color: yellow;
-        }
-
-        .temperature-bar div.red {
-          background-color: red;
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default IndexPage;
+    );
+  };
+  
+  export default IndexPage;
+  
