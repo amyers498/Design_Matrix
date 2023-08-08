@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const IndexPage = () => {
+const Matrix = ({ matrixName }) => {
   const [matrixData, setMatrixData] = useState([]);
   const [matrixTitle, setMatrixTitle] = useState('');
   const [clickedCells, setClickedCells] = useState({});
@@ -8,11 +8,11 @@ const IndexPage = () => {
 
   useEffect(() => {
     fetchMatrixData();
-  }, []);
+  }, [matrixName]);
 
   const fetchMatrixData = async () => {
     try {
-      const response = await fetch('http://localhost:1338/api/matrices?populate=*');
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL);
       const data = await response.json();
       console.log(data); // Log the fetched data
       if (data.data && data.data.length > 0) {
@@ -192,9 +192,14 @@ const IndexPage = () => {
           </tbody>
         </table>
       </div>
-      <div className="total-price">
-        <p>Total Budget: ${totalPriceFromAPI}</p>
-        <p>Total Estimated Price: ${calculateTotalPrice()}</p>
+     {/* Flex container for "Total Budget" and "Total Estimated Price" */}
+     <div className="total-container">
+        <div className="total-price">
+          <p>Total Budget: ${totalPriceFromAPI}</p>
+        </div>
+        <div className="total-estimated-price">
+          <p>Total Estimated Budget: ${calculateTotalPrice()}</p>
+        </div>
       </div>
       <div className="temperature-bar">
         <div
@@ -208,107 +213,130 @@ const IndexPage = () => {
         </div>
   
         <style jsx>{`
-          /* Styles that were not modified */
-          .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-            background-color: #f9f7f0;
-          }
-          .matrix-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: black;
-          }
-          .table-container {
-            display: block;
-            max-width: 100%; /* Changed to 100% */
-            overflow-x: auto;
-          }
-          table {
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 14px; /* Adjusted font size */
-            table-layout: auto; /* Changed to auto */
-            width: 100%; /* Added to set the table width to 100% */
-          }
-          th,
-          td {
-            border: 1px solid #ddd;
-            padding: 5px; /* Adjusted padding */
-            text-align: left;
-            white-space: normal;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            font-family: "Arial Narrow", sans-serif;
-            font-weight: bold;
-            font-style: italic;
-            color: black;
-          }
-          th {
-            background-color: #245a99;
-            color: white;
-          }
-          img {
-            max-width: 60px; /* Adjusted max-width */
-            max-height: 60px; /* Adjusted max-height */
-          }
-          .rotate {
-            white-space: nowrap;
-          }
-          .rotate div {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 80px; /* Adjusted width */
-            font-size: 14px; /* Adjusted font size */
-          }
-          .image-container {
-            display: flex;
-            justify-content: center;
-          }
-  
-          /* Modified style for the clicked cells */
-          td.clicked {
-            background-color: #8ab7e8;
-          }
-  
-          /* Style for the total price */
-          .total-price {
-            margin-top: 20px;
-            font-weight: bold;
-            color: black;
-          }
-  
-          /* Style for the temperature bar */
-          .temperature-bar {
-            margin-top: 20px;
-            height: 20px;
-            background-color: #f2f2f2;
-            border-radius: 4px;
-            overflow: hidden;
-          }
-  
-          .temperature-bar div {
-            height: 100%;
-            transition: width 0.3s;
-          }
-  
-          .temperature-bar div.green {
-            background-color: green;
-          }
-  
-          .temperature-bar div.yellow {
-            background-color: yellow;
-          }
-  
-          .temperature-bar div.red {
-            background-color: red;
-          }
-        `}</style>
+        /* Styles for the entire component */
+        .container {
+          font-family: 'Arial', sans-serif; /* Replace 'Arial' with your preferred sans-serif font */
+          max-width: 100%;
+          margin: 0 auto;
+          padding: 20px;
+          text-align: center;
+          background-color: #f9f7f0;
+        }
+
+        /* Rest of the styles */
+        .matrix-title {
+          font-size: 40px;
+          margin-bottom: 20px;
+          color: black;
+          text-align: left;
+        }
+        .table-container {
+          display: block;
+          max-width: 100%;
+          overflow-x: auto;
+        }
+        table {
+          border-collapse: collapse;
+          margin-top: 20px;
+          font-size: 14px;
+          table-layout: auto;
+          width: 100%;
+        }
+        th,
+        td {
+          border: 5px solid #ddd;
+          border-color: #0a32f4;
+          padding: 10px;
+          text-align: left;
+          white-space: normal;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          font-family: 'Arial', sans-serif; /* Replace 'Arial' with your preferred sans-serif font */
+          font-weight: bold;
+          
+          color: black;
+        }
+        th {
+          background-color: #245a99;
+          color: white;
+        }
+        img {
+          max-width: 60px;
+          max-height: 60px;
+        }
+        .rotate {
+          white-space: nowrap;
+        }
+        .rotate div {
+          transform: rotate(0 deg);
+          transform-origin: left top;
+          width: 80px;
+          font-size: 14px;
+          font-family: 'Arial', sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 80px; /* Adjust the height to center the text vertically */
+          
+        }
+      
+        }
+        .image-container {
+          display: flex;
+          justify-content: center; /* Center horizontally */
+          align-items: center; /* Center vertically */
+          height: 100%; /* Make the container take the full height of the cell */
+          
+        }
+
+        /* Modified style for the clicked cells */
+        td.clicked {
+          background-color: #8ab7e8;
+        }
+
+        /* Style for the total price */
+        .total-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 20px;
+          font-weight: bold;
+          color: black;
+        }
+
+        .total-price,
+        .total-estimated-price {
+          flex: 1;
+        }
+
+        /* Style for the temperature bar */
+        .temperature-bar {
+          margin-top: 20px;
+          height: 40px; /* Double the height to make it double thick */
+          background-color: #f2f2f2;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+
+        .temperature-bar div {
+          height: 100%;
+          transition: width 0.3s;
+        }
+
+        .temperature-bar div.green {
+          background-color: green;
+        }
+
+        .temperature-bar div.yellow {
+          background-color: yellow;
+        }
+
+        .temperature-bar div.red {
+          background-color: red;
+        }
+      `}</style>
       </div>
     );
   };
   
-  export default IndexPage;
-  
+  export default Matrix;
