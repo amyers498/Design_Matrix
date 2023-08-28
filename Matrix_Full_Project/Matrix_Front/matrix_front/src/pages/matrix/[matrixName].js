@@ -6,13 +6,17 @@ const MatrixPage = () => {
   const router = useRouter();
   const { matrixName } = router.query;
   const [matrixData, setMatrixData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchMatrixData();
-  }, []);
+    if (matrixName) {
+      fetchMatrixData();
+    }
+  }, [matrixName]);
 
   const fetchMatrixData = async () => {
     try {
+      setIsLoading(true); // Set loading state to true while fetching
       const response = await fetch(process.env.NEXT_PUBLIC_API_URL);
       const data = await response.json();
       console.log(data); // Log the fetched data
@@ -27,12 +31,14 @@ const MatrixPage = () => {
       }
     } catch (error) {
       console.error('Error fetching matrix data:', error);
+    } finally {
+      setIsLoading(false); // Set loading state to false after fetch attempt
     }
   };
 
   return (
     <div>
-      {matrixData ? (
+      {!isLoading && matrixData ? (
         <Matrix matrixData={matrixData} />
       ) : (
         <p>Loading...</p>

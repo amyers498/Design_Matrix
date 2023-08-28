@@ -41,7 +41,7 @@
     "Text_1_1": {
       "type": "text"
     },
-    "Price_1_1": {
+    "R1Price_1_1": {
       "type": "integer"
     },
     "Photo_1_2": {
@@ -58,7 +58,7 @@
     "Text_1_2": {
       "type": "text"
     },
-    "Price_1_2": {
+    "R1Price_1_2": {
       "type": "integer"
     },
     "Photo_1_3": {
@@ -75,7 +75,7 @@
     "Text_1_3": {
       "type": "text"
     },
-    "Price_1_3": {
+    "R1Price_1_3": {
       "type": "integer"
     },
     "Column_Name_2": {
@@ -95,7 +95,7 @@
     "Text_2_1": {
       "type": "text"
     },
-    "Price_2_1": {
+    "R1Price_2_1": {
       "type": "integer"
     },
     "Photo_2_2": {
@@ -112,7 +112,7 @@
     "Text_2_2": {
       "type": "text"
     },
-    "Price_2_2": {
+    "R1Price_2_2": {
       "type": "integer"
     },
     "Photo_2_3": {
@@ -129,7 +129,7 @@
     "Text_2_3": {
       "type": "text"
     },
-    "Price_2_3": {
+    "R1Price_2_3": {
       "type": "integer"
     },
     "Column_Name_3": {
@@ -149,7 +149,7 @@
     "Text_3_1": {
       "type": "text"
     },
-    "Price_3_1": {
+    "R1Price_3_1": {
       "type": "integer"
     },
     "Photo_3_2": {
@@ -166,7 +166,7 @@
     "Text_3_2": {
       "type": "text"
     },
-    "Price_3_2": {
+    "R1Price_3_2": {
       "type": "integer"
     },
     "Photo_3_3": {
@@ -183,7 +183,7 @@
     "Text_3_3": {
       "type": "text"
     },
-    "Price_3_3": {
+    "R1Price_3_3": {
       "type": "integer"
     },
     "Column_Name_4": {
@@ -203,7 +203,7 @@
     "Text_4_1": {
       "type": "text"
     },
-    "Price_4_1": {
+    "R1Price_4_1": {
       "type": "integer"
     },
     "Photo_4_2": {
@@ -220,7 +220,7 @@
     "Text_4_2": {
       "type": "text"
     },
-    "Price_4_2": {
+    "R1Price_4_2": {
       "type": "integer"
     },
     "Photo_4_3": {
@@ -237,7 +237,7 @@
     "Text_4_3": {
       "type": "text"
     },
-    "Price_4_3": {
+    "R1Price_4_3": {
       "type": "integer"
     },
     "Column_Name_5": {
@@ -257,7 +257,7 @@
     "Text_5_1": {
       "type": "text"
     },
-    "Price_5_1": {
+    "R1Price_5_1": {
       "type": "integer"
     },
     "Photo_5_2": {
@@ -274,7 +274,7 @@
     "Text_5_2": {
       "type": "text"
     },
-    "Price_5_2": {
+    "R1Price_5_2": {
       "type": "integer"
     },
     "Photo_5_3": {
@@ -291,7 +291,7 @@
     "Text_5_3": {
       "type": "text"
     },
-    "Price_5_3": {
+    "R1Price_5_3": {
       "type": "integer"
     },
     "Column_Name_6": {
@@ -311,7 +311,7 @@
     "Text_6_1": {
       "type": "text"
     },
-    "Price_6_1": {
+    "R1Price_6_1": {
       "type": "integer"
     },
     "Photo_6_2": {
@@ -328,7 +328,7 @@
     "Text_6_2": {
       "type": "text"
     },
-    "Price_6_2": {
+    "R1Price_6_2": {
       "type": "integer"
     },
     "Photo_6_3": {
@@ -345,7 +345,7 @@
     "Text_6_3": {
       "type": "text"
     },
-    "Price_6_3": {
+    "R1Price_6_3": {
       "type": "integer"
     },
     "Column_Name_7": {
@@ -365,7 +365,7 @@
     "Text_7_1": {
       "type": "text"
     },
-    "Price_7_1": {
+    "R1Price_7_1": {
       "type": "integer"
     },
     "Photo_7_2": {
@@ -382,7 +382,7 @@
     "Text_7_2": {
       "type": "text"
     },
-    "Price_7_2": {
+    "R1Price_7_2": {
       "type": "integer"
     },
     "Photo_7_3": {
@@ -399,7 +399,7 @@
     "Text_7_3": {
       "type": "text"
     },
-    "Price_7_3": {
+    "R1Price_7_3": {
       "type": "integer"
     },
     "Column_Name_8": {
@@ -419,7 +419,7 @@
     "Text_8_1": {
       "type": "text"
     },
-    "Price_8_1": {
+    "R1Price_8_1": {
       "type": "integer"
     },
     "Photo_8_2": {
@@ -436,7 +436,7 @@
     "Text_8_2": {
       "type": "text"
     },
-    "Price_8_2": {
+    "R1Price_8_2": {
       "type": "integer"
     },
     "Photo_8_3": {
@@ -453,7 +453,7 @@
     "Text_8_3": {
       "type": "text"
     },
-    "Price_8_3": {
+    "R1Price_8_3": {
       "type": "integer"
     },
     "Column_Name_9": {
@@ -473,7 +473,7 @@
     "Text_9_1": {
       "type": "text"
     },
-    "Price_9_1": {
+    "R1Price_9_1": {
       "type": "integer"
     },
     "Photo_9_2": {
@@ -490,7 +490,7 @@
     "Text_9_2": {
       "type": "text"
     },
-    "Price_9_2": {
+    "R1Price_9_2": {
       "type": "integer"
     },
     "Photo_9_3": {
@@ -507,7 +507,7 @@
     "Text_9_3": {
       "type": "text"
     },
-    "Price_9_3": {
+    "R1Price_9_3": {
       "type": "integer"
     },
     "Column_Name_10": {
@@ -527,7 +527,7 @@
     "Text_10_1": {
       "type": "text"
     },
-    "Price_10_1": {
+    "R1Price_10_1": {
       "type": "integer"
     },
     "Photo_10_2": {
@@ -544,7 +544,7 @@
     "Text_10_2": {
       "type": "text"
     },
-    "Price_10_2": {
+    "R1Price_10_2": {
       "type": "integer"
     },
     "Photo_10_3": {
@@ -561,17 +561,104 @@
     "Text_10_3": {
       "type": "text"
     },
-    "Price_10_3": {
+    "R1Price_10_3": {
       "type": "integer"
-    },
-    "Slug": {
-      "type": "string"
     },
     "Title_Matrix": {
       "type": "string"
     },
     "Name_OF_Row": {
       "type": "string"
+    },
+    "R2Price_1_1": {
+      "type": "integer"
+    },
+    "R2Price_1_2": {
+      "type": "integer"
+    },
+    "R2Price_1_3": {
+      "type": "integer"
+    },
+    "R2Price_2_1": {
+      "type": "integer"
+    },
+    "R2Price_2_2": {
+      "type": "integer"
+    },
+    "R2Price_2_3": {
+      "type": "integer"
+    },
+    "R2Price_3_1": {
+      "type": "integer"
+    },
+    "R2Price_3_2": {
+      "type": "integer"
+    },
+    "R2Price_3_3": {
+      "type": "integer"
+    },
+    "R2Price_4_1": {
+      "type": "integer"
+    },
+    "R2Price_4_2": {
+      "type": "integer"
+    },
+    "R2Price_4_3": {
+      "type": "integer"
+    },
+    "R2Price_5_1": {
+      "type": "integer"
+    },
+    "R2Price_5_2": {
+      "type": "integer"
+    },
+    "R2Price_5_3": {
+      "type": "integer"
+    },
+    "R2Price_6_1": {
+      "type": "integer"
+    },
+    "R2Price_6_2": {
+      "type": "integer"
+    },
+    "R2Price_6_3": {
+      "type": "integer"
+    },
+    "R2Price_7_1": {
+      "type": "integer"
+    },
+    "R2Price_7_2": {
+      "type": "integer"
+    },
+    "R2Price_7_3": {
+      "type": "integer"
+    },
+    "R2Price_8_1": {
+      "type": "integer"
+    },
+    "R2Price_8_2": {
+      "type": "integer"
+    },
+    "R2Price_8_3": {
+      "type": "integer"
+    },
+    "R2Price_9_1": {
+      "type": "integer"
+    },
+    "R2Price_9_2": {
+      "type": "integer"
+    },
+    "R2Price_9_3": {
+      "type": "integer"
+    },
+    "R2Price_10_1": {
+      "type": "integer"
+    },
+    "R2Price_10_2": {
+      "type": "integer"
+    },
+    "R2Price_10_3": {
+      "type": "integer"
     }
   }
 }

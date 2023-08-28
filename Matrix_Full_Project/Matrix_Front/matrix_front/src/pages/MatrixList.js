@@ -69,18 +69,20 @@ const MatrixList = () => {
         />
       </div>
       <ul>
-      {filteredMatrixData.map((matrix) => (
-  <li key={matrix.id} className="matrix-item">
-    <Link href={`/matrix/${encodeURIComponent(matrix.attributes.Title_Matrix)}`}>
-      <span className="matrix-link">{matrix.attributes.Title_Matrix}</span>
-    </Link>
-    <p className="created-at">Created At: {new Date(matrix.attributes.createdAt).toLocaleDateString()}</p>
-  </li>
-))}
-
+        {filteredMatrixData.map((matrix) => (
+          <li key={matrix.id} className="matrix-item">
+            <Link href={`/matrix/${encodeURIComponent(matrix.attributes.Title_Matrix)}`}>
+              <span className="matrix-link">{matrix.attributes.Title_Matrix}</span>
+            </Link>
+            <p className="created-at">
+              Created At: {new Date(matrix.attributes.createdAt).toLocaleDateString()}
+            </p>
+          </li>
+        ))}
       </ul>
       <style jsx>{`
         .matrix-list {
+          background-color: white;
           max-width: 800px;
           margin: 0 auto;
           padding: 20px;
@@ -89,6 +91,7 @@ const MatrixList = () => {
         .matrix-list-title {
           font-size: 28px;
           margin-bottom: 20px;
+          color: #215eac;
         }
 
         .search-bar {
@@ -99,6 +102,8 @@ const MatrixList = () => {
           width: 100%;
           padding: 10px;
           font-size: 16px;
+          font-family: sans-serif;
+          font-weight: bold;
         }
 
         .filter-section {
@@ -108,11 +113,14 @@ const MatrixList = () => {
         .filter-section label {
           font-size: 16px;
           margin-right: 10px;
+          color: #215eac;
         }
 
         .filter-section input {
           padding: 6px;
           font-size: 16px;
+          font-family: sans-serif;
+          font-weight: bold;
         }
 
         ul {

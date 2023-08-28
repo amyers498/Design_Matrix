@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import ScreenshotCapture from './ScreenshotCapture';
 
 const Matrix = ({ matrixName }) => {
   const [matrixData, setMatrixData] = useState([]);
@@ -72,12 +73,6 @@ const Matrix = ({ matrixName }) => {
     const textKey = `Text_${colIndex}_${rowIndex}`;
     return matrixData[0].attributes[textKey] || '';
   };
-
-  const extractPrice = (colIndex, rowIndex) => {
-    const priceKey = `Price_${colIndex}_${rowIndex}`;
-    return matrixData[0].attributes[priceKey] || 0;
-  };
-
   const handleCellClick = (colIndex, rowIndex) => {
     setClickedCells((prevClickedCells) => {
       const updatedClickedCells = { ...prevClickedCells };
@@ -94,25 +89,33 @@ const Matrix = ({ matrixName }) => {
     });
   };
   
+  const formatPrice = (price) => `$${price.toLocaleString()}`;
+
+  const extractPriceRange = (colIndex, rowIndex) => {
+    const r1PriceKey = `R1Price_${colIndex}_${rowIndex}`;
+    const r2PriceKey = `R2Price_${colIndex}_${rowIndex}`;
+    const r1Price = matrixData[0].attributes[r1PriceKey] || 0;
+    const r2Price = matrixData[0].attributes[r2PriceKey] || 0;
+    return `${formatPrice(r1Price)} - ${formatPrice(r2Price)}`;
+  };
+
   const calculateTotalPrice = () => {
     let total = 0;
-    Object.entries(clickedCells).forEach(([colIndex, rowIndex]) => {
-      total += extractPrice(parseInt(colIndex) + 1, parseInt(rowIndex) + 1);
-    });
-    return total;
+    const r1Total = Object.entries(clickedCells).reduce((acc, [colIndex, rowIndex]) => {
+      const r1PriceKey = `R1Price_${parseInt(colIndex) + 1}_${parseInt(rowIndex) + 1}`;
+      const r1Price = matrixData[0].attributes[r1PriceKey] || 0;
+      return acc + r1Price;
+    }, 0);
+    const r2Total = Object.entries(clickedCells).reduce((acc, [colIndex, rowIndex]) => {
+      const r2PriceKey = `R2Price_${parseInt(colIndex) + 1}_${parseInt(rowIndex) + 1}`;
+      const r2Price = matrixData[0].attributes[r2PriceKey] || 0;
+      return acc + r2Price;
+    }, 0);
+  
+    return `${formatPrice(r1Total)} - ${formatPrice(r2Total)}`;
   };
-
-  const temperatureColor = (percentage) => {
-    if (percentage > 95) {
-      return 'red';
-    } else if (percentage > 80) {
-      return 'yellow';
-    } else {
-      return 'green';
-    }
-  };
-
-  const percentage = (calculateTotalPrice() / totalPriceFromAPI) * 100;
+  
+  
 
   const getNumberOfColumns = () => {
     if (matrixData.length === 0) return 0;
@@ -149,86 +152,153 @@ const Matrix = ({ matrixName }) => {
 
     return maxRowIndex;
   };
+  const calculateBoxColor = () => {
+    const r1Percentage = (r1Total / totalPriceFromAPI) * 100;
+    const r2Percentage = (r2Total / totalPriceFromAPI) * 100;
+  
+    if (r1Percentage >= 75 && r1Percentage <= 95 && r2Percentage <= 74) {
+      return 'linear-gradient(to bottom,  green,yellow)';
+    }
+  
+    if (r1Percentage <= 74 && r2Percentage >= 75 && r2Percentage <= 95) {
+      return 'linear-gradient(to bottom, yellow,green)';
+    }
+  
+    if (r1Percentage >= 75 && r1Percentage <= 95 && r2Percentage >= 96) {
+      return 'linear-gradient(to bottom, red,yellow)';
+    }
+  
+    if (r1Percentage >= 96 && r2Percentage <= 74) {
+      return 'linear-gradient(to bottom, green, red)';
+    }
+  
+    if (r1Percentage <= 74 && r2Percentage <= 74) {
+      return 'linear-gradient(to bottom, green, green)';
+    }
+  
+    if (r1Percentage >= 96 && r2Percentage >= 96) {
+      return 'linear-gradient(to bottom, red, red)';
+    }
+  
+    if (r1Percentage >= 75 && r1Percentage <= 95 && r2Percentage >= 75 && r2Percentage <= 95) {
+      return 'linear-gradient(to bottom, yellow, yellow)';
+    }
+  
+    if (r1Percentage <= 74 && r2Percentage >= 96) {
+      return 'linear-gradient(to bottom, red,green)';
+    }
+  
+    if (r1Percentage <= 74 && r2Percentage >= 75 && r2Percentage <= 95) {
+      return 'linear-gradient(to bottom,  yellow,green)';
+    }
+  };
+  
+  
 
   const numberOfColumns = getNumberOfColumns();
   const numberOfRows = getNumberOfRows();
 
+  
+
+  const totalRange = calculateTotalPrice();
+  const r1Total = parseFloat(totalRange.split(' - ')[0].replace(/[$,]/g, ''));
+  const r2Total = parseFloat(totalRange.split(' - ')[1].replace(/[$,]/g, ''));
+  const boxTop = Math.min(((totalPriceFromAPI - r2Total) / totalPriceFromAPI) * 60, 60);
+  const boxHeight = Math.min(((r2Total - r1Total) / totalPriceFromAPI) * 60, 60);
+
+  
+
   return (
-    <div className="container">
+    <ScreenshotCapture>
+      <div className="container">
       {matrixTitle && <h1 className="matrix-title">{matrixTitle}</h1>}
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th style={{ backgroundColor: '#245a99' }}>Row Name</th>
-              {extractColumnNames().map((columnName, colIndex) => (
-                <th key={colIndex}>{columnName}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {extractRowNames().map((rowName, rowIndex) => (
-              <tr key={rowIndex}>
-                <td className="rotate">
-                  <div className="row-name">{rowName}</div>
-                </td>
-                {[...Array(numberOfColumns)].map((_, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={clickedCells[colIndex] === rowIndex ? 'clicked' : ''}
-                    onClick={() => handleCellClick(colIndex, rowIndex)}
-                  >
-                    <div className="image-container">
-                      {renderPhotoIfExists(
-                        matrixData[0].attributes[`Photo_${colIndex + 1}_${rowIndex + 1}`]?.data?.attributes
-                      )}
-                    </div>
-                    <p>{extractText(colIndex + 1, rowIndex + 1)}</p>
-                    <p>Price: ${extractPrice(colIndex + 1, rowIndex + 1)}</p>
-                  </td>
+      <div className="total-price">
+        <p>Total Budget: {formatPrice(totalPriceFromAPI)}</p>
+      </div>
+      {/* Display Total Price Range at the top */}
+      <div className="total-range">
+        <p>Estimated Price Range: {totalRange}</p>
+      </div>
+      <div className="content-container">
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style={{ backgroundColor: '#245a99' }}>Row Name</th>
+                {extractColumnNames().map((columnName, colIndex) => (
+                  <th key={colIndex}>{columnName}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {extractRowNames().map((rowName, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td className="rotate">
+                    <div className="row-name">{rowName}</div>
+                  </td>
+                  {[...Array(numberOfColumns)].map((_, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className={clickedCells[colIndex] === rowIndex ? 'clicked' : ''}
+                      onClick={() => handleCellClick(colIndex, rowIndex)}
+                    >
+                      <div className="image-container">
+                        {renderPhotoIfExists(
+                          matrixData[0].attributes[`Photo_${colIndex + 1}_${rowIndex + 1}`]?.data?.attributes
+                        )}
+                      </div>
+                      <p>{extractText(colIndex + 1, rowIndex + 1)}</p>
+                      <p>Price Range: {extractPriceRange(colIndex + 1, rowIndex + 1)}</p>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Vertical line */}
+        <div className="vertical-line-container">
+          <div className="line-text line-top">{formatPrice(totalPriceFromAPI)}</div>
+          <div className="vertical-line" style={{ height: '100%' }}>
+            <div
+              className="line-box"
+              style={{
+                top: `${boxTop}%`,
+                height: `${boxHeight}%`,
+                background: calculateBoxColor(),
+              }}
+            ></div>
+          </div>
+          <div className="line-text line-bottom">$0</div>
+          <div className="line-text line-total">Total Price: ${totalPriceFromAPI}</div>
+        </div>
       </div>
-     {/* Flex container for "Total Budget" and "Total Estimated Price" */}
-     <div className="total-container">
-        <div className="total-price">
-          <p>Total Budget: ${totalPriceFromAPI}</p>
-        </div>
-        <div className="total-estimated-price">
-          <p>Total Estimated Budget: ${calculateTotalPrice()}</p>
-        </div>
-      </div>
-      <div className="temperature-bar">
-        <div
-          style={{
-            width: `${percentage}%`,
-            backgroundColor: temperatureColor(percentage),
-            height: '100%',
-            borderRadius: '4px',
-          }}
-          />
-        </div>
-  
-        <style jsx>{`
+      {/* Flex container for "Total Budget" and "Total Estimated Price" */}
+      <div className="total-container"></div>
+    
+      
+      <style jsx>{`
         /* Styles for the entire component */
         .container {
-          font-family: 'Arial', sans-serif; /* Replace 'Arial' with your preferred sans-serif font */
+          font-family: 'Arial', sans-serif;
           max-width: 100%;
           margin: 0 auto;
           padding: 20px;
           text-align: center;
           background-color: #f9f7f0;
+          position: relative;
         }
-
         /* Rest of the styles */
         .matrix-title {
-          font-size: 40px;
+          font-size: 50px;
           margin-bottom: 20px;
           color: black;
           text-align: left;
+        }
+        .content-container {
+          display: flex;
+          position: relative;
+          margin-right: 50px;
         }
         .table-container {
           display: block;
@@ -240,20 +310,19 @@ const Matrix = ({ matrixName }) => {
           margin-top: 20px;
           font-size: 14px;
           table-layout: auto;
-          width: 100%;
+          width: 90%; /* Reduce the width of the table */
         }
         th,
         td {
           border: 5px solid #ddd;
           border-color: #0a32f4;
-          padding: 10px;
+          padding: 5px; /* Reduce the padding for cells */
           text-align: left;
           white-space: normal;
           word-break: break-word;
           overflow-wrap: break-word;
-          font-family: 'Arial', sans-serif; /* Replace 'Arial' with your preferred sans-serif font */
+          font-family: 'Arial', sans-serif;
           font-weight: bold;
-          
           color: black;
         }
         th {
@@ -261,8 +330,8 @@ const Matrix = ({ matrixName }) => {
           color: white;
         }
         img {
-          max-width: 60px;
-          max-height: 60px;
+          max-width: 40px; /* Adjust image size */
+          max-height: 40px; /* Adjust image size */
         }
         .rotate {
           white-space: nowrap;
@@ -270,30 +339,24 @@ const Matrix = ({ matrixName }) => {
         .rotate div {
           transform: rotate(0 deg);
           transform-origin: left top;
-          width: 80px;
-          font-size: 14px;
+          width: 60px; /* Adjust cell width */
+          font-size: 12px; /* Adjust font size */
           font-family: 'Arial', sans-serif;
           display: flex;
           align-items: center;
           justify-content: center;
-          height: 80px; /* Adjust the height to center the text vertically */
-          
-        }
-      
+          height: 60px; /* Adjust the height to center the text vertically */
         }
         .image-container {
           display: flex;
-          justify-content: center; /* Center horizontally */
-          align-items: center; /* Center vertically */
-          height: 100%; /* Make the container take the full height of the cell */
-          
+          justify-content: center;
+          align-items: center;
+          height: 100%;
         }
-
         /* Modified style for the clicked cells */
         td.clicked {
           background-color: #8ab7e8;
         }
-
         /* Style for the total price */
         .total-container {
           display: flex;
@@ -303,40 +366,74 @@ const Matrix = ({ matrixName }) => {
           font-weight: bold;
           color: black;
         }
-
-        .total-price,
-        .total-estimated-price {
-          flex: 1;
-        }
-
-        /* Style for the temperature bar */
-        .temperature-bar {
-          margin-top: 20px;
-          height: 40px; /* Double the height to make it double thick */
-          background-color: #f2f2f2;
-          border-radius: 4px;
-          overflow: hidden;
-        }
-
-        .temperature-bar div {
+       
+        /* Style for the vertical line */
+        .vertical-line-container {
+          position: absolute;
+          top: 0;
+          right: 20px; /* Adjust this value to move the line further right */
+          width: 40px;
           height: 100%;
-          transition: width 0.3s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
         }
-
-        .temperature-bar div.green {
-          background-color: green;
+        .vertical-line {
+          position: relative; /* Change to relative position */
+          width: 2px;
+          background-color: black;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
         }
-
-        .temperature-bar div.yellow {
-          background-color: yellow;
+        .line-box {
+          position: absolute;
+          left: -6px; /* Adjust the position to center the thicker line */
+          width: 20px; /* Increase the width to make the line thicker */
+          height: 12px; /* Set the height of the line box */
+          top: calc(50% - 6px); /* Center the line box vertically on the line */
+          background-color: red; /* Change this color */
+          opacity: 0.8;
+          transition: top 0.3s, height 0.3s;
+          left: calc(50% - 6px); /* Horizontally center the line box */
         }
-
-        .temperature-bar div.red {
-          background-color: red;
+        .range-text {
+          font-size: 14px;
+          font-family: 'Arial', sans-serif;
+          color: black;
+          text-align: center;
+          margin: 5px;
+          font-weight: bold;
         }
+        .line-bottom,
+        .line-top {
+          font-size: 14px;
+          font-family: 'Arial', sans-serif;
+          color: black;
+          font-weight: bold;
+        }
+        .total-range {
+          font-size: 25px;
+          font-family: 'Arial', sans-serif;
+          color: black;
+          text-align: center;
+          margin: 5px;
+          font-weight: bold;
+        }
+        .total-price {
+          
+          font-weight: bold;
+          font-size: 25px;
+          font-family: 'Arial', sans-serif;
+          color: black;
+          margin: 5px
+          
       `}</style>
-      </div>
-    );
-  };
-  
-  export default Matrix;
+    </div>
+    </ScreenshotCapture>
+  );
+};
+
+export default Matrix;
